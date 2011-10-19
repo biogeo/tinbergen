@@ -35,43 +35,40 @@ movie_suffixes = ('mp4', 'mov', 'mts')
 file_suffixes = {'ethogram': 'tbethogram',
                  'project': 'tbproject',
                  'observation': 'tbobs'}
+
 def append_obs_suffix(filename):
+    """
+    Add the standard observation file suffix to the end of a string.
+    """
     return filename + '.' + file_suffixes['observation']
 
-#_key_expr = r'(?:\\[\\\s=]|[^=\s])+' # match valid keys
-#_val_expr = r'(?:\\[\\\s]|\S)*' # match valid values
-#_quote_expr = r'(?:\\[\\"]|[^"])*?' # match quoted text until quote
-#_keyval_rex =
-#    r'(?P<key>{0})=(?P<quo>")?(?P<val>(?(quo){1}|{2}))(?(quo))'.format(
-#    _key_expr, _val_expr, _quote_expr)
-
 def dictlist_lookup(dictlist, key, value):
+    """
+    From a list of dicts, retrieve those elements for which <key> is <value>.
+    """
     return [el for el in dictlist if el.get(key)==value]
 
 class Project(object):
     """
-    A representation of a specific observation project, providing convient
-    access to directories, backup of data, and segregation by observer.
+    A representation of a Tinbergen project. Includes methods for retrieving
+    and storing observations associated with a video file.
+    
+    Projects should be initialized with a project filename. That file defines
+    a directory root where video files are stored, <video-root>, and a root
+    observations are stored, <project-root>. Each video file to be coded should
+    be in <video-root> or one of its subdirectories:
+    
+    <video-root>/a/b/video.ext
+    
+    The project also defines observers, with short observer-codes, <osr>.
+    Observations for a given file will be saved in files like:
+    
+    <project-root>/a/b/video.ext.<osr>.tbobs
+    
+    Once created, saving any subsequent observations will move the original
+    observation file to video.ext.<osr>.tbobs.N, where N begins at 1 and
+    increments every time.
     """
-    # Projects map onto a directory structure:
-    # video-rootdir
-    # video-rootdir/subdir/video-file.ext
-    # The project needs a root directory, containing an ethogram:
-    # project-rootdir/project.ethogram
-    # And a project description file:
-    # project-rootdir/project.tbproj
-    # And each video file gets an observation file:
-    # project-rootdir/subdir/video-file.ext.tbobs
-    # Modifying an observation file causes the original to be copied to:
-    # project-rootdir/subdir/video-file.ext.tbobs.1
-    # Or for multiple backups, the suffix becomes .N with N=num backups
-    # We need methods to do the following:
-    # * Create a new project root from a video root and an ethogram (for now,
-    #   just do manually)
-    # * Get a listing of all video files in the project
-    # * For a given video file, retrieve read-only access to its tbobs file
-    # * For a given video file, backup existing tbobs and retrieve writable
-    #   access to a new tbobs file
     def __init__(self, project_filename):
         project_file_dir = os.path.dirname(project_filename)
         self.__project_root = ''
@@ -106,14 +103,23 @@ class Project(object):
         self.update_video_list()
     
     def get_observer_name(self, code):
+        """
+        Given an observer code, retrieve the observer's name.
+        """
         matches = [el for el in self.observers if el.get('code')==code]
         return matches[0]['name']
     
     def get_observer_code(self, name):
+        """
+        Given an observer's name, retrieve the code.
+        """
         matches = [el for el in self.observers if el.get('name')==name]
         return matches[0]['code']
     
     def update_video_list(self):
+        """
+        Check the file system again for files descending from video_root.
+        """
         full_list = []
         walker = os.walk(self.__video_root)
         for directory_entry in walker:
@@ -129,6 +135,10 @@ class Project(object):
         self.video_files = full_list
     
     def get_video_observers(self, videoname):
+        """
+        Get all observers who have stored observations for a particular video.
+        Returns a list of observer codes.
+        """
         coders = []
         matchpattern = self.join_project_path(videoname) + '.*.tbobs'
         for obsfile in glob.glob(matchpattern):
@@ -136,18 +146,33 @@ class Project(object):
         return coders
     
     def join_project_path(self, *pargs):
+        """
+        Returns inputs joined to project_root with os.path.join
+        """
         return os.path.join(self.__project_root, *pargs)
     
     def join_video_path(self, *pargs):
+        """
+        Returns inputs joined to video_root with os.path.join
+        """
         return os.path.join(self.__video_root, *pargs)
     
     def rel_project_path(self, path):
+        """
+        Converts a path to be relative to the project_root.
+        """
         return os.path.relpath(path, self.__project_root)
     
     def rel_video_path(self, path):
+        """
+        Converts a path to be relative to video_root.
+        """
         return os.path.relpath(path, self.__video_root)
     
     def get_obsfile(self, videofile, observer):
+        """
+        Attaches ".<obs>.tbobs" to a path, where <obs> is the observer code.
+        """
         if videofile is None or observer is None:
             return ''
         else:
@@ -155,6 +180,9 @@ class Project(object):
                              observer, file_suffixes['observation']])
     
     def load_observations(self, filename=None):
+        """
+        Don't use this one.
+        """
         if filename==None:
             filename = self.cur_file
         filepath = self.join_project_path(append_obs_suffix(filename))
@@ -165,6 +193,10 @@ class Project(object):
             obs = ObservationSet(self.ethogram, self.observer, filename)
     
     def load_obs_from_file(self, videofile, observer):
+        """
+        For a video file and a particular observer, load a set of observations
+        (if they exist). An observation set is a list of dict objects.
+        """
         if videofile is None or observer is None:
             return []
         obsfile = self.get_obsfile(videofile, observer)
