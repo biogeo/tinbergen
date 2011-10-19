@@ -1,0 +1,31 @@
+# Example Tinbergen ethogram
+
+# Name of the ethogram:
+name: Example Tinbergen ethogram
+
+# Moment behaviors occur instantly
+behavior: kind=moment name=Instantaneous
+# Binary behaviors are always occurring (value=True) or not occurring
+# (value=False)
+behavior: kind=binary name=Is-doing-something
+# State behaviors are always occurring in one of several values
+behavior: kind=state name=Locomotion values=rest,walk,run,climb
+# Variables can take any value
+behavior: kind=variable name=Subject-count
+
+# Lines starting in "code:" define codes for behaviors and their values
+
+# When the observer enters "in", code an "Instantaneous" behavior
+code: symbol=in name=Instantaneous
+# "dst" ==> "Is-doing-something" with value "True"
+code: symbol=dst name=Is-doing-something value=True
+# "dsf" ==> Same as above, but value "False"
+code: symbol=dsf name=Is-doing-something value=False
+# Code "Locomotion" with various values:
+code: symbol=lre name=Locomotion value=rest
+code: symbol=lwa name=Locomotion value=walk
+code: symbol=lru name=Locomotion value=run
+code: symbol=lcl name=Locomotion value=climb
+# Allow "sco *" to code "Subject-count" with value "*" (fill in anything for *)
+code: symbol=sco name=Subject-count args=value
+
