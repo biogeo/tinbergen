@@ -195,7 +195,16 @@ class Project(object):
     def load_obs_from_file(self, videofile, observer):
         """
         For a video file and a particular observer, load a set of observations
-        (if they exist). An observation set is a list of dict objects.
+        (if they exist). An observation set is a list of dict objects. To be
+        valid, each observation must have at least the keys:
+            'entry': the code entered by the observer
+            'time': the time of the observation, relative to the video
+        In general it should also include the keys produced by the parse_entry
+        method of the ethogram called on 'entry':
+            'kind': one of 'moment', 'binary', 'state', 'variable'
+            'name': the name of the observed behavior
+            'value': for binary, state, or variable behaviors
+        Other keys are also permitted.
         """
         if videofile is None or observer is None:
             return []
@@ -213,6 +222,15 @@ class Project(object):
         return obslist
     
     def save_obslist(self, videofile, observer, obslist):
+        """
+        For a particular video file and observer, save a list of observations.
+        obslist is a list of dictionary objects, as in load_obs_from_file. The
+        file will be saved in:
+            <project-root>/path/to/video/file.ext.<obscode>.tbobs
+        If a file already exists at this location, it will first be renamed by
+        adding a .N suffix, where N is a number that starts at 1 and increments
+        every time.
+        """
         observer_name = self.get_observer_name(observer)
         obsfile = self.get_obsfile(videofile, observer)
         obsdir = os.path.dirname(obsfile)
@@ -238,6 +256,9 @@ class Project(object):
                     pass
     
     def save_observations(self, obs):
+        """
+        Don't use this.
+        """
         filename = obs.obs_source
         filepath = self.join_project_path(append_obs_suffix(filename))
         dirpath = os.path.dirname(filepath)
@@ -256,6 +277,9 @@ class Project(object):
             obs.save(f)
     
     def next_file(self):
+        """
+        The next/previous file interface isn't really being used.
+        """
         # So this is kind of lame. I should probably figure out a real iterator
         # type thing at some point.
         if self.cur_file not in self.video_files:
@@ -268,6 +292,9 @@ class Project(object):
                 self.cur_file = self.video_files[fileind+1]
     
     def prev_file(self):
+        """
+        Don't need to use this.
+        """
         if self.cur_file not in self.video_files:
             self.cur_file = self.video_files[0]
         else:
@@ -279,7 +306,7 @@ class Project(object):
 
 class Ethogram(object):
     """
-    A set of possible observations, and symbols mapping to them.
+    A set of possible behavioral observations, and symbols mapping to them.
     """
     def __init__(self, name=''):
         self.name = name
@@ -488,7 +515,8 @@ class CodeError(ValueError):
 
 class ObservationSet(collections.Sequence):
     """
-    A set of observations from a specific video file.
+    Deprecated. Observation sets right now are just represented as lists of
+    dict objects. I may try to resuscitate an actual class for this later.
     """
     def __init__(self, ethogram, observer, obs_source):
         """
@@ -667,18 +695,34 @@ def as_keyvalstr(dictobj):
     return ' '.join(keyvals)
 
 def join_dicts(*pargs, **kargs):
+    """
+    Convenience function to construct one dict from many. The result has all
+    the keys from the inputs, with values taken from those inputs. If a key
+    appears in two or more inputs, its value is taken from the leftmost input.
+    """
     new_dict = kargs
     for item in reversed(pargs):
         new_dict.update(item)
     return new_dict
 
 def keys_keep(dictobj, keep):
+    """
+    Convenience function to construct a new dict from an existing one, keeping
+    only certain keys if present.
+    """
     return dictkeys_setop(operator.and_, dictobj, keep)
 
 def keys_lose(dictobj, lose):
+    """
+    Convenience function to construct a new dict from an existing one,
+    discarding certain keys if present.
+    """
     return dictkeys_setop(operator.sub, dictobj, lose)
 
 def dictkeys_setop(op, a, b):
+    """
+    Perform set operations on two dicts based on their keys.
+    """
     if isinstance(b,collections.Mapping):
         return dict((key, a.get(key, b.get(key))) for key in op(set(a),set(b)))
     else:
