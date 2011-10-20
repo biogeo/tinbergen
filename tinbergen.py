@@ -1,4 +1,8 @@
+#!/bin/python
 
+"""
+Main user interface and controller for Tinbergen.
+"""
 
 import gobject
 import gtk
@@ -8,7 +12,9 @@ import tbdatamodel
 NO_TIME = float('nan')
 
 class MainUI:
-    
+    """
+    A class to open a window for coding a Tinbergen project.
+    """
     key_dispatch = {'new obs': gtk.gdk.keyval_from_name('Tab'),
                     'step forward': gtk.gdk.keyval_from_name('Right'),
                     'step back': gtk.gdk.keyval_from_name('Left'),
@@ -53,16 +59,23 @@ class MainUI:
         self.main_win.show()
     
     def get_current_observer(self):
+        "Returns the current observer."
         return self._cur_observer
     
     def set_current_observer(self, new):
+        """
+        Sets the current observer. If new is not a valid observer code for the
+        project, sets to no current observer.
+        """
         if new == self._cur_observer:
             return
+        # We are about to close the observations, so save them first.
         self.save_current_obs()
         observer_codes = [obs['code'] for obs in self.project.observers]
         if new not in observer_codes:
             new = None
         self._cur_observer = new
+        # Update the Observer combobox to reflect the change.
         combo_active = self.observer_combo.get_active()
         combo_model = self.observer_combo.get_model()
         combo_items = [row[0] for row in combo_model]
@@ -71,24 +84,33 @@ class MainUI:
         else:
             combo_current = combo_items[combo_active]
         if new != combo_current:
+            # Only change the combobox if necessary, to avoid looping
             if new is None:
                 self.observer_combo.set_active(0)
             else:
                 new_active = combo_items.index(new)
                 self.observer_combo.set_active(new_active)
+        # Now that the observer has changed, open observations again.
         self.open_observations()
     
     def get_current_video(self):
+        "Returns the current video file."
         return self._cur_video
     
     def set_current_video(self, new):
+        """
+        Set the current video file.
+        """
         if new == self._cur_video:
             return
         if new not in self.project.video_files:
             new = None
+        # Close the video
         self.player.set_state(gst.STATE_NULL)
+        # We're about to close the current observations, so save first
         self.save_current_obs()
         self._cur_video = new
+        # If the selected video is not the new video, update the selection
         nav_selection = self.file_nav.get_selection()
         nav_model, nav_iter = nav_selection.get_selected()
         if nav_iter is None:
@@ -104,12 +126,17 @@ class MainUI:
                         nav_selection.select_path(ind)
                         break
         if new is not None:
+            # Open the new video
             video_path = self.project.join_video_path(new)
             self.player.set_property('uri', 'file://' + video_path)
             self.player.set_state(gst.STATE_PAUSED)
         self.open_observations()
     
     def get_current_time(self):
+        """
+        For the currently open video, get the current time, in seconds. If there
+        is no video open, return 0.
+        """
         try:
             nanosecs, format = self.player.query_position(gst.FORMAT_TIME)
             return float(nanosecs) / gst.SECOND
@@ -117,6 +144,9 @@ class MainUI:
             return 0
     
     def set_current_time(self, time):
+        """
+        Seek to a given time in the video.
+        """
         if time < 0:
             time = 0.0
         self.player.seek(self.get_video_rate(), gst.FORMAT_TIME,
@@ -125,6 +155,9 @@ class MainUI:
                      gst.SEEK_TYPE_NONE, 0)
     
     def get_video_duration(self):
+        """
+        Get the duration of the current video, in seconds.
+        """
         try:
             nanosecs, format = self.player.query_duration(gst.FORMAT_TIME)
             return float(nanosecs) / gst.SECOND
@@ -132,9 +165,11 @@ class MainUI:
             return 0
     
     def get_video_rate(self):
+        "Get the current relative playback rate. 1.0 is normal speed."
         return self._cur_video_rate
     
     def set_video_rate(self, rate):
+        "Set the current relative playback rate. 1.0 normal speed."
         try:
             nanosecs, format = self.player.query_position(gst.FORMAT_TIME)
             self.player.seek(rate, gst.FORMAT_TIME,
@@ -146,6 +181,7 @@ class MainUI:
             return
     
     def can_edit_observations(self):
+        "Returns True if the observations are currently editable."
         return self._cur_observer is not None and self._cur_video is not None
     
     def is_video_playing(self):
