@@ -4,12 +4,22 @@
 Main user interface and controller for Tinbergen.
 """
 
+import sys
+import os
 import gobject
 import gtk
 import gst
 import tbdatamodel
 
 NO_TIME = float('nan')
+
+if __name__ == '__main__':
+    # Get the path to this script using sys.argv[0]
+    script_dir = os.path.dirname(sys.argv[0])
+else:
+    # Get the path to this script using __file__
+    script_dir = os.path.dirname(__file__)
+mainwin_gladefile = os.path.join(script_dir, 'tb_mainwin.glade')
 
 class MainUI:
     """
@@ -32,7 +42,7 @@ class MainUI:
         self.current_modified = False
         # Load UI from Glade file:
         builder = gtk.Builder()
-        builder.add_from_file('tb_mainwin.glade')
+        builder.add_from_file(mainwin_gladefile)
         # Get references to relevant objects as attributes of self:
         ui_objects = ['main_win','observer_combo','file_nav','behavior_nav',
                       'video_area', 'play_button', 'time_scale']
