@@ -257,7 +257,8 @@ class MainUI:
         value_cell = gtk.CellRendererText()
         value_cell.set_property('size-points', 9)
         time_col.pack_start(time_cell,True)
-        time_col.add_attribute(time_cell,'text',0)
+        #time_col.add_attribute(time_cell,'text',0)
+        time_col.set_cell_data_func(time_cell, self.render_behav_time)
         entry_col.pack_start(entry_cell,True)
         entry_col.set_cell_data_func(entry_cell, self.render_behav_entry)
         behav_col.pack_start(name_cell)
@@ -498,6 +499,10 @@ class MainUI:
         observers = self.project.get_video_observers(filename)
         observer_str = ', '.join(observers)
         cell.set_property('text', observer_str)
+    
+    def render_behav_time(self, column, cell, model, treeiter):
+        time = model.get_value(treeiter, 0)
+        cell.set_property('text', '{:.3f}'.format(time))
     
     def render_behav_entry(self, column, cell, model, treeiter):
         obs = model.get_value(treeiter, 1)
