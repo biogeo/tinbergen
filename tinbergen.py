@@ -49,6 +49,7 @@ class MainUI:
         for item in ui_objects:
             setattr(self, item, builder.get_object(item))
         
+        self.time_scale.set_digits(3)
         # Connect signals from UI to methods of self:
         builder.connect_signals(self)
         self.behavior_entry_cell = gtk.CellRendererText()
