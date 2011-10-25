@@ -206,10 +206,12 @@ class MainUI:
     def configure_observer_combo(self):
         # Create model and cell renderers for the observer combobox
         model = gtk.ListStore(str)
-        model.append(['<Observer...>'])
+        #model.append(['<Observer...>'])
+        model.append([''])
         cell = gtk.CellRendererText()
         self.observer_combo.pack_start(cell, True)
-        self.observer_combo.add_attribute(cell, 'text', 0)
+        #self.observer_combo.add_attribute(cell, 'text', 0)
+        self.observer_combo.set_cell_data_func(cell, self.render_observer_combo)
         self.observer_combo.set_model(model)
         for observer in self.project.observers:
             model.append([observer['code']])
@@ -482,6 +484,15 @@ class MainUI:
             self.player.set_state(gst.STATE_PAUSED)
     
     #------- TREE CELL RENDERER CALLBACKS -------
+    def render_observer_combo(self, column, cell, model, treeiter):
+        obs_code = model.get_value(treeiter, 0)
+        if obs_code:
+            obs_name = self.project.get_observer_name(obs_code)
+            obs_name += ' ({0})'.format(obs_code)
+        else:
+            obs_name = '<Observer...>'
+        cell.set_property('text', obs_name)
+    
     def render_file_observers(self, column, cell, model, treeiter):
         filename = model.get_value(treeiter, 0)
         observers = self.project.get_video_observers(filename)
