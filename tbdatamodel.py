@@ -664,6 +664,7 @@ def parse_keyvals(keyvalstr):
             val = strip_escapes(val[1:-1])
         elif ',' in val:
             # Value has the form 'list,of,items'
+            # Potential bug: if every comma is escaped, we're still tuple-ing
             val = re.findall(r'(?:\A|,)((?:\\.|[^,])*)', val)
             val = tuple(strip_escapes(elem) for elem in val)
         else:
