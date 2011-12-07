@@ -31,7 +31,7 @@ import operator
 
 observation_kinds = ('moment', 'state', 'binary', 'variable')
 binary_values = ('True', 'False')
-movie_suffixes = ('mp4', 'mov', 'mts')
+movie_suffixes = ('mp4', 'mov', 'mts', 'm4v')
 file_suffixes = {'ethogram': 'tbethogram',
                  'project': 'tbproject',
                  'observation': 'tbobs'}
