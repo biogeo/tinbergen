@@ -31,7 +31,7 @@ import operator
 
 observation_kinds = ('moment', 'state', 'binary', 'variable')
 binary_values = ('True', 'False')
-movie_suffixes = ('mp4', 'mov', 'mts', 'm4v')
+movie_suffixes = ('mp4', 'mov', 'mts', 'm4v', 'avi')
 file_suffixes = {'ethogram': 'tbethogram',
                  'project': 'tbproject',
                  'observation': 'tbobs'}
@@ -130,7 +130,7 @@ class Project(object):
                 # happen, so not worth special-casing, but irritating.
                 # PS, if you're reading this because it did happen, sorry!
                 suffix = dir_file.split('.')[-1]
-                if dir_file[0]!='.' and suffix in movie_suffixes:
+                if dir_file[0]!='.' and suffix.lower() in movie_suffixes:
                     full_list.append(os.path.join(subdir, dir_file))
         self.video_files = full_list
     
