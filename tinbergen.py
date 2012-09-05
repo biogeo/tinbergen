@@ -351,6 +351,7 @@ class MainUI:
         elif keyval in self.hotkey_list:
             keyname = gtk.gdk.keyval_name(keyval)
             self.make_new_observation(keyname)
+            return True
         else: # Unhandled key press
             return False
     
