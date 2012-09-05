@@ -10,6 +10,7 @@ import gobject
 import gtk
 import gst
 import tbdatamodel
+import string
 
 NO_TIME = float('nan')
 
@@ -32,6 +33,7 @@ class MainUI:
                     'speed x2': gtk.gdk.keyval_from_name('backslash'),
                     'speed x1': gtk.gdk.keyval_from_name('bracketright'),
                     'speed x.5': gtk.gdk.keyval_from_name('bracketleft')}
+    hotkey_list = [gtk.gdk.keyval_from_name(c) for c in string.ascii_letters]
     
     def __init__(self, project):
         self.project = project
@@ -346,6 +348,9 @@ class MainUI:
         elif keyval == self.key_dispatch['speed x.5']:
             self.set_video_rate(0.5)
             return True
+        elif keyval in self.hotkey_list:
+            keyname = gtk.gdk.keyval_name(keyval)
+            self.make_new_observation(keyname)
         else: # Unhandled key press
             return False
     
@@ -518,16 +523,20 @@ class MainUI:
         cell.set_property('text', obs.get('value', ''))
     
     #------- FILE NAVIGATION -------
-    def make_new_observation(self):
+    def make_new_observation(self, entry=None):
         if not self.can_edit_observations():
             return
         nav = self.behavior_nav
         model = nav.get_model()
         new_item_path = len(model)
-        model.append([self.get_current_time(), {}])
-        edit_column = nav.get_column(1)
-        nav.set_cursor(new_item_path, edit_column, start_editing=True)
-        #nav.grab_focus()
+        if entry is None:
+            model.append([self.get_current_time(), {}])
+            edit_column = nav.get_column(1)
+            nav.set_cursor(new_item_path, edit_column, start_editing=True)
+            #nav.grab_focus()
+        else:
+            obs = self.project.ethogram.parse_entry(entry)
+            model.append([self.get_current_time(), obs])
     
     def save_current_obs(self):
         # Save them if they've been modified
