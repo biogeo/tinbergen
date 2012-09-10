@@ -538,6 +538,7 @@ class MainUI:
         else:
             obs = self.project.ethogram.parse_entry(entry)
             model.append([self.get_current_time(), obs])
+            self.current_modified = True
     
     def save_current_obs(self):
         # Save them if they've been modified
