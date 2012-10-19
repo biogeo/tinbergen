@@ -1,0 +1,5 @@
+Tinbergen is a tool for researchers interested in describing the behaviors of animals in videos.
+
+Tinbergen relies on Python, Gstreamer, and GTK+.
+
+Tinbergen is written by Geoff Adams, as part of his Ph.D. research under the mentorship of Michael Platt.

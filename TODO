@@ -1,0 +1,6 @@
+To-do list:
+
+1. Write some basic documentation
+2. Change file format to YAML (or possibly JSON) for auto-magic readability (in a separate branch so others can continue using "classic" file format)
+3. Include a mechanism for the coders to identify specific behavior channels as "complete" or not
+4. Graphical display of behavior channels with movie (low priority)
