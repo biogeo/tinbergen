@@ -1,0 +1,244 @@
+%YAML 1.1
+# Prototype of new YAML-based files
+---
+project: Example Tinbergen project definition file
+description: Flavor text attached to the project.
+video_root: /home/user/videos
+project_root: . # Optional; default is .
+ethogram_file: example-ethogram.yaml # Could also be a list of files?
+observers:
+  - {name: Alice Addison, code: aaa}
+  - {name: Bob Bowers, code: bbb}
+...
+---
+name: Example Tinbergen ethogram, YAML style
+description: This is an ethogram.
+entries:
+  - event: Momentary-behavior
+    type: moment
+    description: >
+      A behavior that takes only a moment, or which we are not interested in the
+      duration of.
+  - code: mo
+    obs:
+      event: Momentary-behavior
+
+  - event: Binary-state
+    type: binary
+    description: >
+      A behavioral state which we can always describe as either true or false,
+      or on or off.
+  - code: bst
+    obs:
+      event: Binary-state
+      value: true
+  - code: bsf
+    obs:
+      event: Binary-state
+      value: false
+
+  - event: Multiple-state
+    type: state
+    description: >
+      A behavioral state which we can always describe as in one of several
+      values (such as postural/locomotive, here).
+    values: [prone, sitting, standing, walking, running]
+  - code: mpr
+    obs: {event: Multiple-state, value: prone}
+  - code: msi
+    obs: {event: Multiple-state, value: sitting}
+  - code: mst
+    obs: {event: Multiple-state, value: standing}
+  - code: mwa
+    obs: {event: Multiple-state, value: walking}
+  - code: mru
+    obs: {event: Multiple-state, value: running}
+
+  - event: Variable-state
+    type: variable
+    description: >
+      A behavioral state which we can always describe has having some
+      unconstrained value (such as a count of something).
+  - code: vs
+    args: [val]
+    obs:
+      event: Variable-state
+      value: =val
+
+  # We can also easily attach subjects in this way
+  - code: mob
+    args: [sub]
+    obs:
+      event: Momentary-behavior
+      subject: =sub
+
+  - event: Interval-behavior
+    type: interval
+    description: >
+      A behavior which has some duration we are interested in.
+  - code: ibs
+    obs:
+      event: Interval-behavior
+  # Perhaps introduce a special observation type for terminating intervals.
+  # This will require giving each observation an identifier that the coder can
+  # reference to end interval behaviors.
+  - code: end
+    args: [id]
+    obs:
+      terminate: =id
+
+  # How about this as a rule for interaction roles:
+  # An interaction role is a special kind of behavior. When defining an
+  # interaction, one or more roles are created. These roles can be specified
+  # either as a name or as a mapping with the key "name", and optionally
+  # "description" and other keys. Then these roles are present in the ethogram
+  # effectively as behaviors named <interaction-name>:<role-name>, with kind
+  # <interaction-kind>, and other keys taken as given.
+  # Interactions should only be of kind "moment" or "interval". The user is
+  # nevertheless free to specify values or other data as desired.
+  - interaction: Momentary-interaction
+    roles: [Initiate, Receive]   # This is an asymetric interaction
+    type: moment
+    description: >
+      An interaction between two animals, an initiator and a recipient, that
+      only takes a moment, or which we are not interested in the duration of.
+  - code: mi
+    args: [initiator, receiver]
+    obs:
+      interaction: Momentary-interaction
+      roles:
+        - name: Initiate
+          subject: =initiator
+        - name: Receive
+          subject: =receiver
+
+  - interaction: Interval-interaction
+    roles: [Participate]   # This is a symmetric interaction
+    type: interval
+    description: >
+      A symmetric interaction between two animals (ie, there is no distinction
+      between the behaviors of the two individuals participating in the
+      interaction) that has some duration.
+  - code: ii
+    args: [p1, p2]
+    obs:
+      interaction: Interval-interaction
+      roles:
+        - name: Participate
+          subject: =p1
+        - name: Participate
+          subject: =p2
+  # This interaction can be ended using the same "end" code as above.
+...
+---
+observer: Geoff Adams
+moviefile: my-project-movie.m4v
+metadata:
+  fps: 30
+  width: 640
+  height: 480
+  duration: 60.0
+completion:
+  # Which events and subjects are marked has having been completed
+  - event: Momentary-behavior
+  - subject: m1
+entries: # This tells us what exactly the coder typed, for checking errors later
+  # We should allow entries to be amended within Tinbergen, changing both text
+  # and time.
+  - id: 1
+    time: 0.0
+    entry: mob m1
+    deleted: false # Lets us remove entries without removing record of them
+    conflicts: # Lists the ids of any entries this one conflicts with
+#    obs:
+#      event: Momentary-behavior
+#      subject: m1
+  - id: 2
+    time: 0.5
+    entry: ii m1 m2
+    deleted: false
+    conflicts:
+#    obs:
+#      interaction: Interval-interaction
+#      roles:
+#        - name: Participate
+#          subject: m1
+#        - name: Participate
+#          subject: m2
+  - id: 3
+    time: 1.5
+    entry: end 2
+    deleted: false
+    conflicts:
+#    obs:
+#      terminate: 2 # Observation 2 (ii m1 m2) lasted from t=0.5 to t=1.5.
+observations: # These tell us the actual ethogram entries coded
+  moment:
+    - id: 1
+      time: 0.0
+      event: Momentary-behavior
+      subject: m1
+  interval:
+    # Interactions are linked by sharing the same immutable id. This storage
+    # format makes it relatively easy to look up what behaviors some individual
+    # was engaged in at some time. Modifying or deleting behaviors should always
+    # be done by id, so that all behaviors sharing the id are modified in the
+    # same way.
+    - id: 2
+      begin: 0.5
+      end: 1.5
+      event: Interval-interaction:Participate
+      subject: m1
+    - id: 2
+      begin: 0.5
+      end: 1.5
+      event: Interval-interaction:Participate
+      subject: m2
+  binary: # None
+  state: # None
+  variable: # None
+ethogram: # A full copy of the ethogram goes here.
+...
+
+#---
+#name: Example Tinbergen ethogram
+#entries:
+#  # Behavior entries have the keys "behavior" and "kind", and optionally "values"
+#  - behavior: Behavior-name
+#    kind: moment
+#  # Code entries have the keys "code" and "obs", and optionally "value" and "args"
+#  - code: in
+#    obs: Behavior-name
+#  
+#  - behavior: Is-doing-something
+#    kind: binary
+#  - {code: dst, obs: Is-doing-something, value: True}
+#  - {code: dsf, obs: Is-doing-something, value: False}
+#  
+#  - behavior: Locomotion
+#    kind: state
+#    values: [rest, walk, run, climb]
+#  - {code: lre, obs: Locomotion, value: rest}
+#  - {code: lwa, obs: Locomotion, value: walk}
+#  - {code: lru, obs: Locomotion, value: run}
+#  - {code: lcl, obs: Locomotion, value: climb}
+#  
+#  - behavior: Subject-count
+#    kind: variable
+#  - code: sco
+#    obs: Subject-count
+#    args: value #?
+#  
+#  # Or, what about:
+#  - code: int
+#    obs:
+#      - behavior: Interact
+#        value: initiate
+#        subject: _1
+#      - behavior: Interact
+#        value: receive
+#        subject: _2
+#  # Here, "int alpha beta" codes for two Interact behaviors
+#  # The problem here is that it may be harder to track collisions in this way.
+#  # It's probably better to include linked behaviors as a separate behavioral type.
+#...

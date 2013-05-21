@@ -32,6 +32,10 @@ import operator
 observation_kinds = ('moment', 'state', 'binary', 'variable')
 binary_values = ('True', 'False')
 movie_suffixes = ('mp4', 'mov', 'mts', 'm4v', 'avi')
+# Use these instead: (I knew there had to be a way!)
+# foo=gst.type_find_factory_get_list
+# foo[1].get_extensions
+# gst.type_find_helper_for_extension(any_gobject?, 'ext')
 file_suffixes = {'ethogram': 'tbethogram',
                  'project': 'tbproject',
                  'observation': 'tbobs'}
@@ -311,6 +315,7 @@ class Ethogram(object):
     def __init__(self, name=''):
         self.name = name
         self.__behaviors = dict()
+        self.__interactions = dict()
         self.__codes = dict()
     
     @property
@@ -321,13 +326,29 @@ class Ethogram(object):
         each key is a registered behavior's name and the value is a dict with
         at least the keys:
             name: The name of the behavior
-            kind: The kind of behavior (moment, state, binary, or variable)
+            kind: The kind of behavior (moment, interval, state, binary, or
+                  variable)
+            description: Text describing the behavior.
         State behaviors also have:
             values: All possible values the state may take
         And binary behaviors always have:
             values: Always the tuple ('True', 'False')
         """
         return DictViewer(self.__behaviors)
+    
+    @property
+    def interactions(self):
+        """
+        The interactions currently registered in the ethogram. New interactions
+        must be added using the add_interaction method. interactions is a
+        mapping where each key is a registered interaction's name and the value
+        is a dict with at least the keys:
+            name: The name of the interaction
+            kind: The kind of interaction (moment or interval)
+            roles: The names of the various roles in the interaction
+            description: Text describing the interaction
+        """
+        return DictViewer(self.__interactions)
     
     @property
     def codes(self):

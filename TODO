@@ -2,5 +2,22 @@ To-do list:
 
 1. Write some basic documentation
 2. Change file format to YAML (or possibly JSON) for auto-magic readability (in a separate branch so others can continue using "classic" file format)
+    YAML:
+        Very readable
+        Libraries available in lots of languages (including Matlab with mat-yaml)
+        Slightly less intuitive to write ethogram files?
+        Requires PyYAML for Python, which means Tinbergen depends on PyYAML
+            Not that big a deal, actually: already depends on GStreamer, can install from repos.
+    JSON:
+        JSON is part of the Python core library; no extra dependencies
+        Writing ethogram files not intuitive for non-programmers
+    Current tbobs:
+        Very readable; easy to write ethograms
+        Will require an importer for each new language (easy with regex, but still a barrier)
+    CSV:
+        Highly portable, including into Excel
+        Not especially intuitive to write ethograms
+        May be overly limiting
 3. Include a mechanism for the coders to identify specific behavior channels as "complete" or not
 4. Graphical display of behavior channels with movie (low priority)
+5. Include basic information about movie files in tbobs files (resolution, FPS, etc)
