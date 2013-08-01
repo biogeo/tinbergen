@@ -4,7 +4,7 @@ description: This is an ethogram.
 entries:
   - event: Momentary-behavior
     type: moment
-    description: >
+    description:
       A behavior that takes only a moment, or which we are not interested in the
       duration of.
   - code: mo
@@ -13,7 +13,7 @@ entries:
 
   - event: Binary-state
     type: binary
-    description: >
+    description:
       A behavioral state which we can always describe as either true or false,
       or on or off.
   - code: bst
@@ -27,7 +27,7 @@ entries:
 
   - event: Multiple-state
     type: state
-    description: >
+    description:
       A behavioral state which we can always describe as in one of several
       values (such as postural/locomotive, here).
     values: [prone, sitting, standing, walking, running]
@@ -44,7 +44,7 @@ entries:
 
   - event: Variable-state
     type: variable
-    description: >
+    description:
       A behavioral state which we can always describe has having some
       unconstrained value (such as a count of something).
   - code: vs
@@ -62,7 +62,7 @@ entries:
 
   - event: Interval-behavior
     type: interval
-    description: >
+    description:
       A behavior which has some duration we are interested in.
   - code: ibs
     obs:
@@ -87,7 +87,7 @@ entries:
   - interaction: Momentary-interaction
     roles: [Initiate, Receive]   # This is an asymetric interaction
     type: moment
-    description: >
+    description:
       An interaction between two animals, an initiator and a recipient, that
       only takes a moment, or which we are not interested in the duration of.
   - code: mi
@@ -103,7 +103,7 @@ entries:
   - interaction: Interval-interaction
     roles: [Participate]   # This is a symmetric interaction
     type: interval
-    description: >
+    description:
       A symmetric interaction between two animals (ie, there is no distinction
       between the behaviors of the two individuals participating in the
       interaction) that has some duration.

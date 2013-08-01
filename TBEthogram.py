@@ -1,3 +1,5 @@
+# TBEthogram.py
+# A class for representing Tinbergen ethograms
 
 import yaml
 import operator
