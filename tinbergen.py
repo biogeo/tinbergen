@@ -33,7 +33,7 @@ class MainUI:
                     'speed x2': gtk.gdk.keyval_from_name('backslash'),
                     'speed x1': gtk.gdk.keyval_from_name('bracketright'),
                     'speed x.5': gtk.gdk.keyval_from_name('bracketleft')}
-    hotkey_list = [gtk.gdk.keyval_from_name(c) for c in string.ascii_letters]
+    hotkey_list = [gtk.gdk.keyval_from_name(c) for c in string.ascii_letters+string.digits]
     
     def __init__(self, project):
         self.project = project
