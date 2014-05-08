@@ -246,6 +246,7 @@ class MainUI:
         time_col = gtk.TreeViewColumn('Time')
         entry_col = gtk.TreeViewColumn('Entry')
         behav_col = gtk.TreeViewColumn('Behavior')
+        time_col.set_sort_column_id(0)
         nav.append_column(time_col)
         nav.append_column(entry_col)
         nav.append_column(behav_col)
