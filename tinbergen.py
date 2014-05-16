@@ -228,6 +228,9 @@ class MainUI:
         #file_selection.set_select_function(self.on_select_file)
         filename_column = gtk.TreeViewColumn('Movie File')
         observed_column = gtk.TreeViewColumn('Observed')
+        filename_column.set_sort_column_id(0)
+        # Can't easily sort by observed_column because GTK puts sorting in the
+        # model instead of the view for some insane reason
         nav.append_column(filename_column)
         nav.append_column(observed_column)
         name_cell = gtk.CellRendererText()
@@ -247,6 +250,8 @@ class MainUI:
         entry_col = gtk.TreeViewColumn('Entry')
         behav_col = gtk.TreeViewColumn('Behavior')
         time_col.set_sort_column_id(0)
+        # Can't easily sort by anything else because GTK puts sorting into the
+        # model instead of the view for some insane reason
         nav.append_column(time_col)
         nav.append_column(entry_col)
         nav.append_column(behav_col)
