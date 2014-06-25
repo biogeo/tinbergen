@@ -11,6 +11,7 @@ import gtk
 import gst
 import tbdatamodel
 import string
+#import math
 
 NO_TIME = float('nan')
 
@@ -152,7 +153,11 @@ class MainUI:
         """
         try:
             nanosecs, format = self.player.query_position(gst.FORMAT_TIME)
-            return float(nanosecs) / gst.SECOND
+            #return float(nanosecs) / gst.SECOND
+            #return math.floor(float(nanosecs) / gst.SECOND
+            #   * self.current_framerate) / self.current_framerate
+            return (float(nanosecs / int(gst.SECOND / self.current_framerate))
+                / self.current_framerate)
         except gst.QueryError:
             return 0
     
@@ -453,7 +458,8 @@ class MainUI:
             return
         step_secs = 1/self.current_framerate
         step_nanosecs = int(step_secs * gst.SECOND)
-        step = gst.event_new_step(gst.FORMAT_TIME, step_nanosecs, 1, True,False)
+        #step = gst.event_new_step(gst.FORMAT_TIME, step_nanosecs, 1, True,False)
+        step = gst.event_new_step(gst.FORMAT_BUFFERS, 1, 1.0, True, False)
         self.player.send_event(step)
         #self.on_time_update()
     
