@@ -1,5 +1,18 @@
-Tinbergen is a tool for researchers interested in describing the behaviors of animals in videos.
-
-Tinbergen relies on Python, Gstreamer, and GTK+.
+Tinbergen is a tool for researchers interested in describing the behaviors of animals in videos. It is built using Python 2.7, Gstreamer 0.10, and GTK+, and these must be installed for Tinbergen to run.
 
 Tinbergen is written by Geoff Adams, as part of his Ph.D. research under the mentorship of Michael Platt.
+
+REQUIREMENTS
+Although Tinbergen is written using cross-platform tools, at the moment it is only being developed and tested under Linux (specifically Linux Mint, but Ubuntu and Debian Linux should also work fine). For the moment, users who wish to run Tinbergen under Mac OS or Windows are recommended to install Ubuntu Linux in a virtual machine using VirtualBox.
+
+INSTALLATION
+From Ubuntu Linux, first ensure you have a working internet connection. (If running within VirtualBox, this may require some configuration.) Then, open a Terminal window and run the following commands:
+
+sudo apt-get install git python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg
+
+git clone https://github.com/biogeo/tinbergen.git ~/tinbergen
+
+If there are no error messages, you should be ready to go.
+
+USAGE
+Sorry, no usage documentation yet. Check out the files example.tbproj and example.tbethogram for some information to help you get started. Video playback is controlled with spacebar, left and right arrow keys, and the "[", "]", and  "\" keys.
