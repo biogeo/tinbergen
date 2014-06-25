@@ -535,18 +535,19 @@ class MainUI:
             return
         nav = self.behavior_nav
         model = nav.get_model()
-        new_item_path = len(model)
+        #new_item_path = len(model)
         if entry is None:
-            model.append([self.get_current_time(), {}])
+            new_item_iter = model.append([self.get_current_time(), {}])
             do_edit = True
             #edit_column = nav.get_column(1)
             #nav.set_cursor(new_item_path, edit_column, start_editing=True)
             #nav.grab_focus()
         else:
             obs = self.project.ethogram.parse_entry(entry)
-            model.append([self.get_current_time(), obs])
+            new_item_iter = model.append([self.get_current_time(), obs])
             self.current_modified = True
             do_edit = False
+        new_item_path = model.get_path(new_item_iter)
         nav.set_cursor(new_item_path, nav.get_column(1), start_editing=do_edit)
     
     def save_current_obs(self):
