@@ -36,6 +36,7 @@
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">automatic</property>
                 <child>
                   <object class="GtkTreeView" id="file_nav">
                     <property name="visible">True</property>
@@ -53,6 +54,7 @@
               <object class="GtkScrolledWindow" id="scrolledwindow2">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">automatic</property>
                 <child>
                   <object class="GtkTreeView" id="behavior_nav">
                     <property name="visible">True</property>
