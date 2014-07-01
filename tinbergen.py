@@ -375,6 +375,11 @@ class MainUI:
             self.current_modified = True
             return True
     
+    def on_behavior_nav_row_activated(self, nav, path, column):
+        model = nav.get_model()
+        time = model[path][0]
+        self.set_current_time(time)
+    
     def on_start_edit_entry(self, cell, editable, path):
         pass
         #self.main_win.handler_block_by_func(self.on_main_key_press)

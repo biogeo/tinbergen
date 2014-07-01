@@ -60,6 +60,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <signal name="key-press-event" handler="on_behavior_nav_key_press" swapped="no"/>
+                    <signal name="row-activated" handler="on_behavior_nav_row_activated" swapped="no"/>
                   </object>
                 </child>
               </object>
