@@ -3,7 +3,19 @@ Tinbergen is a tool for researchers interested in describing the behaviors of an
 Tinbergen is written by Geoff Adams, as part of his Ph.D. research under the mentorship of Michael Platt.
 
 REQUIREMENTS
-Although Tinbergen is written using cross-platform tools, at the moment it is only being developed and tested under Linux (specifically Linux Mint, but Ubuntu and Debian Linux should also work fine). For the moment, users who wish to run Tinbergen under Mac OS or Windows are recommended to install Ubuntu Linux in a virtual machine using VirtualBox.
+Although Tinbergen is written using cross-platform tools, at the moment it is only being developed and tested under Linux (specifically Linux Mint, but Ubuntu and Debian Linux should also work fine). For the moment, users who wish to run Tinbergen under Mac OS or Windows are recommended to install Ubuntu Linux in a virtual machine using VirtualBox or simiar virtualization software.
+
+If you choose to install Tinbergen in a virtual machine, you are best advised to follow the instructions for your virtualization software. For convenience, a quick summary of the steps for setting up VirtualBox with Ubuntu Linux follows:
+
+1. Download VirtualBox for your system at <https://www.virtualbox.org/wiki/Downloads>. Your current OS is the "host", so select the version appropriate for your system. Run the installation program.
+
+2. Download Ubuntu desktop at <http://www.ubuntu.com/download/desktop>. You will get a .iso disk image file.
+
+3. Run VirtualBox, and create a new virtual machine configured for running Ubuntu Linux. Select the .iso file you downloaded to install. In most cases, the default configuration for the virtual machine should be adequate for running Tinbergen. Go through the installation procedure.
+
+4. Install guest additions using the VirtualBox menu.
+
+5. Configure a shared folder to allow you to easily access Tinbergen data files from your host operating system.
 
 INSTALLATION
 From Ubuntu Linux, first ensure you have a working internet connection. (If running within VirtualBox, this may require some configuration.) Then, open a Terminal window and run the following commands:
